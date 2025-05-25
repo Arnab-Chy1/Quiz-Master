@@ -40,7 +40,7 @@
       border-color: #2a2eec;
     }
     #admin, #quiz, #result { display: none; margin-top: 20px; }
-    input[type="text"], input[type="number"] {
+    input[type="text"], input[type="number"], input[type="password"] {
       padding: 8px;
       margin: 5px;
       width: 80%;
@@ -49,6 +49,11 @@
       border: 1px solid #ccc;
     }
     #timer { font-weight: bold; margin-bottom: 15px; }
+    footer {
+      margin-top: 30px;
+      color: #888;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -57,14 +62,20 @@
   <button onclick="startQuiz()">Start Quiz</button>
 
   <div id="admin">
-    <h2>Add a New Question</h2>
-    <input id="qText" type="text" placeholder="Enter question"><br>
-    <input id="opt1" type="text" placeholder="Option 1"><br>
-    <input id="opt2" type="text" placeholder="Option 2"><br>
-    <input id="opt3" type="text" placeholder="Option 3"><br>
-    <input id="opt4" type="text" placeholder="Option 4"><br>
-    <input id="correct" type="number" placeholder="Correct option number (1-4)"><br>
-    <button onclick="addQuestion()">Save Question</button>
+    <h2>Admin Login</h2>
+    <input id="adminPassword" type="password" placeholder="Enter Admin Password"><br>
+    <button onclick="loginAdmin()">Login</button>
+
+    <div id="adminContent" style="display: none;">
+      <h2>Add a New Question</h2>
+      <input id="qText" type="text" placeholder="Enter question"><br>
+      <input id="opt1" type="text" placeholder="Option 1"><br>
+      <input id="opt2" type="text" placeholder="Option 2"><br>
+      <input id="opt3" type="text" placeholder="Option 3"><br>
+      <input id="opt4" type="text" placeholder="Option 4"><br>
+      <input id="correct" type="number" placeholder="Correct option number (1-4)"><br>
+      <button onclick="addQuestion()">Save Question</button>
+    </div>
     <button onclick="hideAdmin()">Close Panel</button>
   </div>
 
@@ -81,16 +92,40 @@
     <button onclick="location.reload()">Restart</button>
   </div>
 
+  <section id="contact">
+    <h2>Contact Us</h2>
+    <p>Email: chowdhury838@gmail.com</p>
+    <p>Phone: +8801304865313</p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 QUIZ MASTER. All rights reserved.</p>
+  </footer>
+
   <script>
     let questions = JSON.parse(localStorage.getItem('questions') || '[]');
     let current = 0, score = 0, timer;
+    const ADMIN_PASSWORD = "your_admin_password";
 
     function showAdmin() {
       document.getElementById('admin').style.display = 'block';
+      document.getElementById('adminContent').style.display = 'none';
+      document.getElementById('adminPassword').value = '';
     }
 
     function hideAdmin() {
       document.getElementById('admin').style.display = 'none';
+    }
+
+    function loginAdmin() {
+      const enteredPassword = document.getElementById('adminPassword').value;
+      if (enteredPassword === ADMIN_PASSWORD) {
+        document.getElementById('adminContent').style.display = 'block';
+        alert('Admin access granted!');
+      } else {
+        alert('Incorrect password!');
+        document.getElementById('adminPassword').value = '';
+      }
     }
 
     function addQuestion() {
@@ -101,6 +136,12 @@
         questions.push({ question: q, options, answer: correct });
         localStorage.setItem('questions', JSON.stringify(questions));
         alert('Question added successfully!');
+        document.getElementById('qText').value = '';
+        document.getElementById('opt1').value = '';
+        document.getElementById('opt2').value = '';
+        document.getElementById('opt3').value = '';
+        document.getElementById('opt4').value = '';
+        document.getElementById('correct').value = '';
       } else {
         alert('Please fill all fields correctly.');
       }
@@ -113,6 +154,8 @@
       score = 0;
       showQuestion();
       let time = 30;
+      document.getElementById('time').innerText = time;
+      clearInterval(timer);
       timer = setInterval(() => {
         time--;
         document.getElementById('time').innerText = time;
@@ -147,16 +190,5 @@
       document.getElementById('score').innerText = `You scored ${score} out of ${questions.length}`;
     }
   </script>
-</body>
-</html>
-<section id="contact">
-    <h2>Contact Us</h2>
-    <p>Email:chowdhury838gmail.com</p>
-    <p>Phone:+8801304865313</p>
-  </section>
-
-  <footer>
-    <p>&copy; 2025 QUIZ MASTER. All rights reserved.</p>
-  </footer>
 </body>
 </html>
